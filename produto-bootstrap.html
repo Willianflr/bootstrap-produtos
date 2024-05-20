@@ -1,0 +1,137 @@
+ <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produto</title>
+    <!-- Link corrigido para o arquivo de estilo Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <script src="produto.js" type="text/javascript"></script>
+    <div class="container">
+        <h1>Produtos</h1>
+        <div class="form-group">
+            Descrição:
+            <input type="text" id="desc" class="form-control" maxlength="20" />
+        </div>
+        <div class="form-group">
+            Quantidade: 
+            <input type="text" id="qtd" class="form-control" maxlength="3">
+        </div>
+        <div class="form-group">
+            Preço Unitário:
+            <input type="text" id="unit" class="form-control" maxlength="10" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Calcular" class="btn btn-primary" onclick="calcular()" />
+        </div>
+        <div class="form-group">
+            Preço Total
+            <input type="text" id="total" class="form-control" readonly />
+        </div>
+    </div>
+
+    <!-- Modal-->
+    <div class="modal" id="alerta">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Atenção</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div id="mensagem" class="modal-body">
+                    Preencha o campo.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link corrigido para o arquivo jQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <!-- Links corrigidos para o arquivo Popper e Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function validarDescricao() {
+            var desc = document.getElementById('desc');
+            var mensagem = document.getElementById('mensagem');
+            if (desc.value.trim() === "") {
+                desc.style.background = "yellow";
+                mensagem.innerHTML = "Preencha a descrição do produto!";
+                $('#alerta').modal('show');
+                return false;
+            } else {
+                desc.style.background = "white";
+                return true;
+            }
+        }
+
+        function validarQuantidade() {
+            var qtd = document.getElementById('qtd');
+            var mensagem = document.getElementById('mensagem');
+            var erro = false;
+            if (qtd.value.trim() === "") {
+                erro = true;
+            } else {
+                if (isNaN(qtd.value) === true) {
+                    erro = true;
+                } else {
+                    var nQtd = parseInt(qtd.value);
+                    if (nQtd < 1 || nQtd > 999) {
+                        erro = true;
+                    }
+                }
+            }
+            if (erro === true) {
+                qtd.style.background = "yellow";
+                mensagem.innerHTML = "A quantidade deve ser um número entre 1 e 999!";
+                $('#alerta').modal('show');
+            } else {
+                qtd.style.background = "white";
+            }
+            return !erro;
+        }
+
+        function validarPreco() {
+            var unit = document.getElementById('unit');
+            var mensagem = document.getElementById('mensagem');
+            var erro = false;
+            if (unit.value.trim() === '') {
+                erro = true;
+            } else {
+                var nUnit = parseFloat(unit.value);
+                if (nUnit <= 0.0) {
+                    erro = true;
+                } else {
+                    unit.value = nUnit.toFixed(2);
+                }
+            }
+            if (erro === true) {
+                unit.style.background = "yellow";
+                mensagem.innerHTML = "O preço unitário deve ser um número maior que zero!";
+                $('#alerta').modal('show');
+            } else {
+                unit.style.background = "white";
+            }
+            return !erro;
+        }
+
+        function calcular() {
+            var descValido = validarDescricao();
+            var qtdValido = validarQuantidade();
+            var precoValido = validarPreco();
+            if (descValido && qtdValido && precoValido) {
+                var unit = parseFloat(document.getElementById('unit').value);
+                var qtd = parseInt(document.getElementById('qtd').value);
+                var total = unit * qtd;
+                document.getElementById('total').value = total.toFixed(2);
+            }
+        }
+    </script>
+</body>
+</html>
